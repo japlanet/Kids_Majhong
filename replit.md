@@ -25,3 +25,20 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - `pnpm --filter @workspace/api-server run dev` — run API server locally
 
 See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+
+## Artifacts
+
+### Kids Mahjong Puzzle Game (`artifacts/mahjong-kids`)
+- **Preview path**: `/`
+- **Type**: React + Vite (frontend only, no backend)
+- **Description**: A Mahjong-style tile matching puzzle game for kids (first graders)
+- **Features**:
+  - 5 levels with themed emoji tiles (Animals, Food, Space, Sports, Nature)
+  - Hint button (💡) that highlights a valid matching pair
+  - Progress bar and pair counter
+  - Confetti + celebration modal on level completion
+  - Completed levels saved to localStorage
+  - Touch-friendly large tiles for iPad
+  - No reading required — all pictorial
+- **Game Logic**: `src/game/engine.ts` — free tile detection, hint finder, match logic
+- **Levels**: `src/game/levels.ts` — 5 levels, 8/10/12/14/16 pairs respectively
