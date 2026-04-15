@@ -63,55 +63,17 @@ export function buildTiles(level: Level): Tile[] {
   return tiles;
 }
 
-// A tile is "free" (playable) if:
-// 1. Not matched
-// 2. Not blocked on the left OR not blocked on the right (at least one side free)
-// 3. Not covered from above
-//
-// For a simple single-layer game, all unmatched tiles are free.
-// For multi-layer support we implement the classic Mahjong free-tile rules.
-export function isFreeTile(tile: Tile, allTiles: Tile[]): boolean {
-  if (tile.isMatched) return false;
-
-  const active = allTiles.filter(t => !t.isMatched);
-
-  // Check if covered from above (any tile on layer+1 overlapping)
-  const coveredAbove = active.some(
-    t =>
-      t.layer === tile.layer + 1 &&
-      t.row >= tile.row - 1 &&
-      t.row <= tile.row + 1 &&
-      t.col >= tile.col - 1 &&
-      t.col <= tile.col + 1 &&
-      t.id !== tile.id
-  );
-  if (coveredAbove) return false;
-
-  // Check left/right blocking
-  const blockedLeft = active.some(
-    t =>
-      t.layer === tile.layer &&
-      t.col === tile.col - 1 &&
-      t.row === tile.row &&
-      t.id !== tile.id
-  );
-  const blockedRight = active.some(
-    t =>
-      t.layer === tile.layer &&
-      t.col === tile.col + 1 &&
-      t.row === tile.row &&
-      t.id !== tile.id
-  );
-
-  // Free if at least one side (left or right) is open
-  return !blockedLeft || !blockedRight;
+// This is a simple kids matching game — every unmatched tile is always selectable.
+// No Mahjong blocking rules apply.
+export function isFreeTile(tile: Tile): boolean {
+  return !tile.isMatched;
 }
 
 export function getFreeTiles(allTiles: Tile[]): Tile[] {
-  return allTiles.filter(t => !t.isMatched && isFreeTile(t, allTiles));
+  return allTiles.filter(t => isFreeTile(t));
 }
 
-// Find a matching pair among free tiles
+// Find any matching pair among unmatched tiles
 export function findHintPair(allTiles: Tile[]): [Tile, Tile] | null {
   const free = getFreeTiles(allTiles);
   const bySymbol = new Map<string, Tile[]>();
@@ -149,9 +111,6 @@ export function selectTile(state: GameState, tileId: string): GameState {
   const tile = tiles.find(t => t.id === tileId);
   if (!tile || tile.isMatched) return { ...state, tiles };
 
-  if (!isFreeTile(tile, tiles)) return { ...state, tiles };
-
-  // Deselect hint
   if (state.selectedTile === null) {
     // Select this tile
     const newTiles = tiles.map(t => ({
@@ -162,7 +121,7 @@ export function selectTile(state: GameState, tileId: string): GameState {
   }
 
   if (state.selectedTile.id === tileId) {
-    // Deselect
+    // Tap same tile again — deselect it
     const newTiles = tiles.map(t => ({ ...t, isSelected: false }));
     return { ...state, tiles: newTiles, selectedTile: null };
   }
@@ -187,7 +146,7 @@ export function selectTile(state: GameState, tileId: string): GameState {
     };
   }
 
-  // No match — select new tile
+  // No match — select the new tile instead
   const newTiles = tiles.map(t => ({
     ...t,
     isSelected: t.id === tileId,
