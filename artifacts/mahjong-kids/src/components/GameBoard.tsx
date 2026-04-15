@@ -9,7 +9,7 @@ interface GameBoardProps {
 }
 
 export function GameBoard({ tiles, level, onTileClick }: GameBoardProps) {
-  const { tileSize, boardWidth, boardHeight, cols, rows } = useMemo(() => {
+  const { cols, rows } = useMemo(() => {
     const layout = level.layout;
     let maxRow = 0, maxCol = 0;
     for (const layer of layout) {
@@ -22,38 +22,43 @@ export function GameBoard({ tiles, level, onTileClick }: GameBoardProps) {
         }
       }
     }
-    const cols = maxCol + 1;
-    const rows = maxRow + 1;
-
-    // Tile size for iPad-friendly touch (aim for ~80-100px on large screens, smaller on mobile)
-    const maxBoardWidth = Math.min(window.innerWidth - 32, 700);
-    const maxBoardHeight = Math.min(window.innerHeight - 260, 500);
-    const gap = 4;
-    const sizeByWidth = Math.floor((maxBoardWidth - gap * (cols - 1)) / cols);
-    const sizeByHeight = Math.floor((maxBoardHeight - gap * (rows - 1)) / rows);
-    const tileSize = Math.max(56, Math.min(sizeByWidth, sizeByHeight, 100));
-
-    const totalSize = tileSize + gap;
-    const boardWidth = cols * totalSize - gap;
-    const boardHeight = rows * totalSize - gap;
-
-    return { tileSize, boardWidth, boardHeight, cols, rows };
+    return { cols: maxCol + 1, rows: maxRow + 1 };
   }, [level]);
+
+  // Build a lookup: "row-col" -> tile
+  const tileMap = useMemo(() => {
+    const map = new Map<string, Tile>();
+    for (const t of tiles) {
+      map.set(`${t.row}-${t.col}`, t);
+    }
+    return map;
+  }, [tiles]);
 
   return (
     <div
-      className="relative mx-auto"
-      style={{ width: boardWidth, height: boardHeight }}
+      className="grid gap-1.5 mx-auto"
+      style={{
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gridTemplateRows: `repeat(${rows}, 1fr)`,
+        width: "100%",
+        maxWidth: `min(${cols * 90}px, 100%)`,
+        aspectRatio: `${cols} / ${rows}`,
+      }}
       aria-label="Mahjong game board"
     >
-      {tiles.map(tile => (
-        <TileComponent
-          key={tile.id}
-          tile={tile}
-          tileSize={tileSize}
-          onClick={onTileClick}
-        />
-      ))}
+      {Array.from({ length: rows }, (_, row) =>
+        Array.from({ length: cols }, (_, col) => {
+          const tile = tileMap.get(`${row}-${col}`);
+          if (!tile) return <div key={`empty-${row}-${col}`} />;
+          return (
+            <TileComponent
+              key={tile.id}
+              tile={tile}
+              onClick={onTileClick}
+            />
+          );
+        })
+      ).flat()}
     </div>
   );
 }

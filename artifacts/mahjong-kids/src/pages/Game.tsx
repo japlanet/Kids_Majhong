@@ -123,8 +123,8 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
       </div>
 
       {/* Game Board */}
-      <div className="flex-1 flex items-center justify-center px-2 pb-4">
-        <div className="bg-white/30 rounded-3xl p-3 shadow-inner backdrop-blur-sm">
+      <div className="flex-1 flex items-center justify-center px-3 pb-2 min-h-0">
+        <div className="bg-white/30 rounded-3xl p-3 shadow-inner backdrop-blur-sm w-full max-w-2xl">
           <GameBoard
             tiles={gameState.tiles}
             level={level}
