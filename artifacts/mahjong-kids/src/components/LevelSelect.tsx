@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { LEVELS } from "../game/levels";
 
 interface LevelSelectProps {
@@ -5,69 +6,128 @@ interface LevelSelectProps {
   completedLevels: Set<number>;
 }
 
-const BG_COLORS = [
-  "from-green-300 to-teal-300",
-  "from-pink-300 to-rose-300",
-  "from-indigo-300 to-purple-300",
-  "from-yellow-300 to-amber-300",
-  "from-emerald-300 to-green-300",
-];
-
-const BORDER_COLORS = [
-  "border-teal-400",
-  "border-rose-400",
-  "border-purple-400",
-  "border-amber-400",
-  "border-green-400",
-];
+const TIER_LABELS: Record<number, string> = {
+  1:  "⭐ Starter",
+  3:  "⭐⭐ Easy",
+  6:  "⭐⭐⭐ Getting Harder",
+  9:  "🌟 Challenge",
+  13: "🌟🌟 Big Board",
+  17: "🔥 Expert",
+  20: "🔥🔥 Super Hard",
+  23: "💎 Master",
+  26: "💎💎 Champion",
+  29: "🏆 Legend",
+};
 
 export function LevelSelect({ onSelectLevel, completedLevels }: LevelSelectProps) {
+  // Group levels into tiers
+  const tierStarts = Object.keys(TIER_LABELS).map(Number).sort((a, b) => a - b);
+
+  function getTierForLevel(id: number): string | null {
+    for (let i = tierStarts.length - 1; i >= 0; i--) {
+      if (id >= tierStarts[i]) return TIER_LABELS[tierStarts[i]];
+    }
+    return null;
+  }
+
+  // Build display list with tier headers
+  type Item =
+    | { kind: "header"; label: string }
+    | { kind: "level"; levelId: number };
+
+  const items: Item[] = [];
+  let lastTier: string | null = null;
+
+  for (const level of LEVELS) {
+    const tier = getTierForLevel(level.id);
+    if (tier !== lastTier) {
+      items.push({ kind: "header", label: tier! });
+      lastTier = tier;
+    }
+    items.push({ kind: "level", levelId: level.id });
+  }
+
+  const completedCount = completedLevels.size;
+
   return (
-    <div className="min-h-screen game-bg flex flex-col items-center justify-center p-4 py-8">
-      <div className="text-center mb-8">
-        <div className="text-6xl mb-3" role="img" aria-label="mahjong game">🎮</div>
-        <h1 className="text-4xl font-black text-orange-500 drop-shadow-md" style={{ textShadow: "2px 2px 0 rgba(0,0,0,0.1)" }}>
+    <div className="min-h-screen game-bg flex flex-col">
+      {/* Fixed header */}
+      <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-white/60 px-4 py-3 text-center shadow-sm">
+        <div className="text-4xl mb-1" role="img" aria-label="game">🎮</div>
+        <h1 className="text-3xl font-black text-orange-500" style={{ textShadow: "1px 1px 0 rgba(0,0,0,0.08)" }}>
           Tile Match!
         </h1>
-        <p className="text-lg font-bold text-teal-600 mt-1">Pick a level to play!</p>
+        <p className="text-sm font-bold text-teal-600">
+          {completedCount}/{LEVELS.length} levels done!
+          {completedCount > 0 && " " + "⭐".repeat(Math.min(completedCount, 10))}
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 w-full max-w-sm">
-        {LEVELS.map((level, i) => {
-          const done = completedLevels.has(level.id);
-          return (
-            <button
-              key={level.id}
-              onClick={() => onSelectLevel(level.id)}
-              className={`
-                game-btn
-                flex items-center gap-4 p-4 rounded-2xl
-                bg-gradient-to-r ${BG_COLORS[i]}
-                border-4 ${BORDER_COLORS[i]}
-                shadow-lg active:shadow-sm
-                text-white font-black text-xl
-                w-full
-              `}
-              aria-label={`Level ${level.id}: ${level.name}${done ? " - completed" : ""}`}
-            >
-              <span className="text-5xl" role="img">{level.emoji}</span>
-              <div className="flex-1 text-left">
-                <div className="text-2xl font-black drop-shadow">Level {level.id}</div>
-                <div className="text-sm font-bold opacity-90">{level.name}</div>
+      {/* Scrollable level grid */}
+      <div className="flex-1 overflow-y-auto px-3 py-4">
+        {(() => {
+          const rendered: ReactNode[] = [];
+          let pairBuffer: Item[] = [];
+
+          function flushPairs() {
+            if (pairBuffer.length === 0) return;
+            rendered.push(
+              <div key={`pair-${pairBuffer[0].kind === "level" ? pairBuffer[0].levelId : "h"}`}
+                className="grid grid-cols-2 gap-2 mb-2">
+                {pairBuffer.map(item => {
+                  if (item.kind !== "level") return null;
+                  const level = LEVELS.find(l => l.id === item.levelId)!;
+                  const done = completedLevels.has(level.id);
+                  return (
+                    <button
+                      key={level.id}
+                      onClick={() => onSelectLevel(level.id)}
+                      className={`
+                        game-btn flex flex-col items-center gap-1 p-3 rounded-2xl
+                        bg-gradient-to-br ${level.bgColor}
+                        border-2 border-white/50
+                        shadow-md active:shadow-sm
+                        text-white font-black
+                        relative overflow-hidden
+                      `}
+                      aria-label={`Level ${level.id}: ${level.name}${done ? " - completed" : ""}`}
+                    >
+                      {done && (
+                        <span className="absolute top-1 right-1 text-lg" role="img" aria-label="completed">⭐</span>
+                      )}
+                      <span className="text-3xl" role="img">{level.emoji}</span>
+                      <span className="text-xs font-black opacity-80">Level {level.id}</span>
+                      <span className="text-xs font-bold opacity-70 text-center leading-tight">{level.name}</span>
+                    </button>
+                  );
+                })}
               </div>
-              {done && (
-                <span className="text-3xl" role="img" aria-label="completed">⭐</span>
-              )}
-              <span className="text-2xl" role="img" aria-label="play">▶️</span>
-            </button>
-          );
-        })}
-      </div>
+            );
+            pairBuffer = [];
+          }
 
-      <div className="mt-8 flex gap-3 text-3xl" aria-hidden="true">
-        {["🐱", "🍕", "⭐", "⚽", "🌸"].map(e => (
-          <span key={e}>{e}</span>
-        ))}
+          for (const item of items) {
+            if (item.kind === "header") {
+              flushPairs();
+              rendered.push(
+                <div key={`header-${item.label}`} className="flex items-center gap-2 mt-4 mb-2 first:mt-0">
+                  <div className="flex-1 h-px bg-gray-200" />
+                  <span className="text-xs font-black text-gray-500 uppercase tracking-wide whitespace-nowrap">
+                    {item.label}
+                  </span>
+                  <div className="flex-1 h-px bg-gray-200" />
+                </div>
+              );
+            } else {
+              pairBuffer.push(item);
+            }
+          }
+          flushPairs();
+
+          return rendered;
+        })()}
+
+        <div className="h-4" />
       </div>
     </div>
   );

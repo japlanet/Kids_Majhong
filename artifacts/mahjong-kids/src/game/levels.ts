@@ -1,7 +1,7 @@
 import type { Level } from "./types";
 
 // Each tile symbol maps to an emoji
-export const TILE_SETS = {
+export const TILE_SETS: Record<string, { symbol: string; emoji: string }[]> = {
   animals: [
     { symbol: "cat", emoji: "🐱" },
     { symbol: "dog", emoji: "🐶" },
@@ -19,6 +19,10 @@ export const TILE_SETS = {
     { symbol: "lion", emoji: "🦁" },
     { symbol: "elephant", emoji: "🐘" },
     { symbol: "penguin", emoji: "🐧" },
+    { symbol: "hamster", emoji: "🐹" },
+    { symbol: "cow", emoji: "🐮" },
+    { symbol: "horse", emoji: "🐴" },
+    { symbol: "sheep", emoji: "🐑" },
   ],
   food: [
     { symbol: "pizza", emoji: "🍕" },
@@ -37,6 +41,10 @@ export const TILE_SETS = {
     { symbol: "cherry", emoji: "🍒" },
     { symbol: "pineapple", emoji: "🍍" },
     { symbol: "corn", emoji: "🌽" },
+    { symbol: "taco", emoji: "🌮" },
+    { symbol: "burger", emoji: "🍔" },
+    { symbol: "sushi", emoji: "🍣" },
+    { symbol: "ramen", emoji: "🍜" },
   ],
   space: [
     { symbol: "star", emoji: "⭐" },
@@ -55,6 +63,10 @@ export const TILE_SETS = {
     { symbol: "lightning", emoji: "⚡" },
     { symbol: "snowflake", emoji: "❄️" },
     { symbol: "fire", emoji: "🔥" },
+    { symbol: "sparkle", emoji: "✨" },
+    { symbol: "milkyway", emoji: "🌌" },
+    { symbol: "shooting-star", emoji: "🌠" },
+    { symbol: "sun-face", emoji: "🌞" },
   ],
   sports: [
     { symbol: "soccer", emoji: "⚽" },
@@ -73,6 +85,10 @@ export const TILE_SETS = {
     { symbol: "dart", emoji: "🎯" },
     { symbol: "kite", emoji: "🪁" },
     { symbol: "skateboard", emoji: "🛹" },
+    { symbol: "ice-skate", emoji: "⛸️" },
+    { symbol: "boxing", emoji: "🥊" },
+    { symbol: "hockey", emoji: "🏒" },
+    { symbol: "surfboard", emoji: "🏄" },
   ],
   nature: [
     { symbol: "flower", emoji: "🌸" },
@@ -91,110 +107,127 @@ export const TILE_SETS = {
     { symbol: "turtle", emoji: "🐢" },
     { symbol: "fish", emoji: "🐠" },
     { symbol: "crab", emoji: "🦀" },
+    { symbol: "hedgehog", emoji: "🦔" },
+    { symbol: "acorn", emoji: "🌰" },
+    { symbol: "maple-leaf", emoji: "🍁" },
+    { symbol: "earth", emoji: "🌍" },
+  ],
+  vehicles: [
+    { symbol: "car", emoji: "🚗" },
+    { symbol: "bus", emoji: "🚌" },
+    { symbol: "train", emoji: "🚂" },
+    { symbol: "airplane", emoji: "✈️" },
+    { symbol: "ship", emoji: "🚢" },
+    { symbol: "helicopter", emoji: "🚁" },
+    { symbol: "bicycle", emoji: "🚲" },
+    { symbol: "motorcycle", emoji: "🏍️" },
+    { symbol: "tractor", emoji: "🚜" },
+    { symbol: "ambulance", emoji: "🚑" },
+    { symbol: "fire-truck", emoji: "🚒" },
+    { symbol: "police", emoji: "🚓" },
+    { symbol: "taxi", emoji: "🚕" },
+    { symbol: "rocket-ship", emoji: "🚀" },
+    { symbol: "hot-air-balloon", emoji: "🎈" },
+    { symbol: "sailboat", emoji: "⛵" },
+    { symbol: "submarine", emoji: "🤿" },
+    { symbol: "scooter", emoji: "🛵" },
+    { symbol: "cable-car", emoji: "🚡" },
+    { symbol: "truck", emoji: "🚛" },
+  ],
+  music: [
+    { symbol: "guitar", emoji: "🎸" },
+    { symbol: "piano", emoji: "🎹" },
+    { symbol: "trumpet", emoji: "🎺" },
+    { symbol: "violin", emoji: "🎻" },
+    { symbol: "drums", emoji: "🥁" },
+    { symbol: "saxophone", emoji: "🎷" },
+    { symbol: "microphone", emoji: "🎤" },
+    { symbol: "headphones", emoji: "🎧" },
+    { symbol: "music-note", emoji: "🎵" },
+    { symbol: "music-notes", emoji: "🎶" },
+    { symbol: "accordion", emoji: "🪗" },
+    { symbol: "banjo", emoji: "🪕" },
+    { symbol: "bell", emoji: "🔔" },
+    { symbol: "radio", emoji: "📻" },
+    { symbol: "speaker", emoji: "🔊" },
+    { symbol: "cd", emoji: "💿" },
+    { symbol: "clapper", emoji: "🎬" },
+    { symbol: "ticket", emoji: "🎟️" },
+    { symbol: "tada", emoji: "🎉" },
+    { symbol: "crystal-ball", emoji: "🔮" },
+  ],
+  ocean: [
+    { symbol: "fish", emoji: "🐟" },
+    { symbol: "tropical-fish", emoji: "🐠" },
+    { symbol: "shark", emoji: "🦈" },
+    { symbol: "octopus", emoji: "🐙" },
+    { symbol: "squid", emoji: "🦑" },
+    { symbol: "shrimp", emoji: "🦐" },
+    { symbol: "lobster", emoji: "🦞" },
+    { symbol: "crab", emoji: "🦀" },
+    { symbol: "blowfish", emoji: "🐡" },
+    { symbol: "shell", emoji: "🐚" },
+    { symbol: "whale", emoji: "🐋" },
+    { symbol: "dolphin", emoji: "🐬" },
+    { symbol: "seal", emoji: "🦭" },
+    { symbol: "sea-turtle", emoji: "🐢" },
+    { symbol: "starfish", emoji: "⭐" },
+    { symbol: "wave", emoji: "🌊" },
+    { symbol: "anchor", emoji: "⚓" },
+    { symbol: "lighthouse", emoji: "🏠" },
+    { symbol: "beach", emoji: "🏖️" },
+    { symbol: "jellyfish", emoji: "🪼" },
+  ],
+  weather: [
+    { symbol: "sun2", emoji: "☀️" },
+    { symbol: "cloud", emoji: "⛅" },
+    { symbol: "rain", emoji: "🌧️" },
+    { symbol: "storm", emoji: "⛈️" },
+    { symbol: "snow", emoji: "❄️" },
+    { symbol: "rainbow2", emoji: "🌈" },
+    { symbol: "tornado", emoji: "🌪️" },
+    { symbol: "fog", emoji: "🌫️" },
+    { symbol: "windy", emoji: "💨" },
+    { symbol: "umbrella", emoji: "☂️" },
+    { symbol: "lightning2", emoji: "⚡" },
+    { symbol: "thermometer", emoji: "🌡️" },
+    { symbol: "snowman", emoji: "⛄" },
+    { symbol: "sun-cloud", emoji: "🌤️" },
+    { symbol: "drizzle", emoji: "🌦️" },
+    { symbol: "crescent", emoji: "🌙" },
+    { symbol: "sunrise", emoji: "🌅" },
+    { symbol: "sunset", emoji: "🌇" },
+    { symbol: "comet2", emoji: "☄️" },
+    { symbol: "fire2", emoji: "🔥" },
+  ],
+  fantasy: [
+    { symbol: "dragon", emoji: "🐉" },
+    { symbol: "unicorn", emoji: "🦄" },
+    { symbol: "wizard", emoji: "🧙" },
+    { symbol: "fairy", emoji: "🧚" },
+    { symbol: "mermaid", emoji: "🧜" },
+    { symbol: "genie", emoji: "🧞" },
+    { symbol: "elf", emoji: "🧝" },
+    { symbol: "vampire", emoji: "🧛" },
+    { symbol: "ghost", emoji: "👻" },
+    { symbol: "skull", emoji: "💀" },
+    { symbol: "jack-lantern", emoji: "🎃" },
+    { symbol: "magic-wand", emoji: "🪄" },
+    { symbol: "rainbow-flag", emoji: "🌈" },
+    { symbol: "castle", emoji: "🏰" },
+    { symbol: "crown", emoji: "👑" },
+    { symbol: "diamond", emoji: "💎" },
+    { symbol: "potion", emoji: "🧪" },
+    { symbol: "spell-book", emoji: "📖" },
+    { symbol: "treasure", emoji: "💰" },
+    { symbol: "key", emoji: "🗝️" },
   ],
 };
 
-// Simple flat grid layouts — no stacking for kids
-// 1 = tile, 0 = empty
-// Layout is [row][col] for a single layer game
-
-// Level 1: 4x4 grid = 8 pairs (very easy)
-const LEVEL1_LAYOUT: number[][][] = [
-  [
-    [1, 1, 1, 1],
-    [1, 1, 1, 1],
-    [1, 1, 1, 1],
-    [1, 1, 1, 1],
-  ],
-];
-
-// Level 2: 5x4 grid = 10 pairs  
-const LEVEL2_LAYOUT: number[][][] = [
-  [
-    [1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1],
-  ],
-];
-
-// Level 3: 6x4 grid = 12 pairs
-const LEVEL3_LAYOUT: number[][][] = [
-  [
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1],
-  ],
-];
-
-// Level 4: 7x4 grid = 14 pairs  
-const LEVEL4_LAYOUT: number[][][] = [
-  [
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-  ],
-];
-
-// Level 5: 8x4 grid = 16 pairs
-const LEVEL5_LAYOUT: number[][][] = [
-  [
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-  ],
-];
-
-export const LEVELS: Level[] = [
-  {
-    id: 1,
-    name: "Animals",
-    emoji: "🐱",
-    layout: LEVEL1_LAYOUT,
-    tileSet: TILE_SETS.animals.slice(0, 8).map(t => t.symbol),
-    bgColor: "from-green-200 via-teal-100 to-cyan-200",
-    bgEmoji: "🌿",
-  },
-  {
-    id: 2,
-    name: "Yummy Food",
-    emoji: "🍕",
-    layout: LEVEL2_LAYOUT,
-    tileSet: TILE_SETS.food.slice(0, 10).map(t => t.symbol),
-    bgColor: "from-pink-200 via-rose-100 to-orange-200",
-    bgEmoji: "🍭",
-  },
-  {
-    id: 3,
-    name: "Outer Space",
-    emoji: "⭐",
-    layout: LEVEL3_LAYOUT,
-    tileSet: TILE_SETS.space.slice(0, 12).map(t => t.symbol),
-    bgColor: "from-indigo-200 via-purple-100 to-blue-200",
-    bgEmoji: "🚀",
-  },
-  {
-    id: 4,
-    name: "Sports Fun",
-    emoji: "⚽",
-    layout: LEVEL4_LAYOUT,
-    tileSet: TILE_SETS.sports.slice(0, 14).map(t => t.symbol),
-    bgColor: "from-yellow-200 via-amber-100 to-lime-200",
-    bgEmoji: "🏆",
-  },
-  {
-    id: 5,
-    name: "Nature",
-    emoji: "🌸",
-    layout: LEVEL5_LAYOUT,
-    tileSet: TILE_SETS.nature.slice(0, 16).map(t => t.symbol),
-    bgColor: "from-emerald-200 via-green-100 to-teal-200",
-    bgEmoji: "🦋",
-  },
-];
+// Helper to create a flat single-layer grid layout
+function grid(rows: number, cols: number): number[][][] {
+  return [Array.from({ length: rows }, () => Array(cols).fill(1))];
+}
 
 // Map symbol -> emoji
 export function getEmoji(symbol: string): string {
@@ -204,3 +237,74 @@ export function getEmoji(symbol: string): string {
   }
   return "❓";
 }
+
+function symbols(setName: string, count: number): string[] {
+  const set = TILE_SETS[setName];
+  if (!set) return [];
+  return set.slice(0, count).map(t => t.symbol);
+}
+
+// 30 progressively harder levels
+export const LEVELS: Level[] = [
+  // ─── Tier 1: 4 rows × 4 cols = 8 pairs ───
+  { id: 1,  name: "Baby Animals",   emoji: "🐱", layout: grid(4, 4), tileSet: symbols("animals",  8),  bgColor: "from-green-200 via-teal-100 to-cyan-200",     bgEmoji: "🌿" },
+  { id: 2,  name: "Yummy Treats",   emoji: "🍭", layout: grid(4, 4), tileSet: symbols("food",     8),  bgColor: "from-pink-200 via-rose-100 to-orange-200",    bgEmoji: "🍬" },
+
+  // ─── Tier 2: 4 rows × 5 cols = 10 pairs ───
+  { id: 3,  name: "Farm Friends",   emoji: "🐮", layout: grid(4, 5), tileSet: symbols("animals", 10),  bgColor: "from-lime-200 via-green-100 to-emerald-200",  bgEmoji: "🌾" },
+  { id: 4,  name: "Fruit Stand",    emoji: "🍓", layout: grid(4, 5), tileSet: symbols("food",    10),  bgColor: "from-orange-200 via-amber-100 to-yellow-200", bgEmoji: "🍊" },
+  { id: 5,  name: "Blast Off!",     emoji: "🚀", layout: grid(4, 5), tileSet: symbols("space",   10),  bgColor: "from-indigo-200 via-purple-100 to-blue-200",  bgEmoji: "🌟" },
+
+  // ─── Tier 3: 4 rows × 6 cols = 12 pairs ───
+  { id: 6,  name: "Play Ball!",     emoji: "⚽", layout: grid(4, 6), tileSet: symbols("sports",  12),  bgColor: "from-yellow-200 via-amber-100 to-lime-200",   bgEmoji: "🏆" },
+  { id: 7,  name: "Bug Garden",     emoji: "🦋", layout: grid(4, 6), tileSet: symbols("nature",  12),  bgColor: "from-emerald-200 via-green-100 to-teal-200",  bgEmoji: "🌺" },
+  { id: 8,  name: "Vroom Vroom",    emoji: "🚗", layout: grid(4, 6), tileSet: symbols("vehicles",12),  bgColor: "from-sky-200 via-blue-100 to-indigo-200",     bgEmoji: "🛣️" },
+
+  // ─── Tier 4: 4 rows × 7 cols = 14 pairs ───
+  { id: 9,  name: "Wild Animals",   emoji: "🦁", layout: grid(4, 7), tileSet: symbols("animals", 14),  bgColor: "from-amber-200 via-yellow-100 to-orange-200", bgEmoji: "🌴" },
+  { id: 10, name: "Sweet Shop",     emoji: "🍩", layout: grid(4, 7), tileSet: symbols("food",    14),  bgColor: "from-rose-200 via-pink-100 to-fuchsia-200",   bgEmoji: "🎀" },
+  { id: 11, name: "Star Map",       emoji: "⭐", layout: grid(4, 7), tileSet: symbols("space",   14),  bgColor: "from-violet-200 via-indigo-100 to-blue-200",  bgEmoji: "✨" },
+  { id: 12, name: "Make Music!",    emoji: "🎸", layout: grid(4, 7), tileSet: symbols("music",   14),  bgColor: "from-fuchsia-200 via-purple-100 to-pink-200", bgEmoji: "🎵" },
+
+  // ─── Tier 5: 4 rows × 8 cols = 16 pairs ───
+  { id: 13, name: "Ocean World",    emoji: "🐠", layout: grid(4, 8), tileSet: symbols("ocean",   16),  bgColor: "from-cyan-200 via-sky-100 to-blue-200",       bgEmoji: "🌊" },
+  { id: 14, name: "All Sports",     emoji: "🏆", layout: grid(4, 8), tileSet: symbols("sports",  16),  bgColor: "from-green-200 via-lime-100 to-yellow-200",   bgEmoji: "🥇" },
+  { id: 15, name: "Weather Watch",  emoji: "🌈", layout: grid(4, 8), tileSet: symbols("weather", 16),  bgColor: "from-blue-200 via-sky-100 to-cyan-200",       bgEmoji: "⛅" },
+  { id: 16, name: "Fantasy Fun",    emoji: "🐉", layout: grid(4, 8), tileSet: symbols("fantasy", 16),  bgColor: "from-purple-200 via-violet-100 to-fuchsia-200",bgEmoji:"🌟" },
+
+  // ─── Tier 6: 5 rows × 6 cols = 15 pairs  ───
+  { id: 17, name: "Animal Kingdom", emoji: "🐼", layout: grid(5, 6), tileSet: symbols("animals", 15),  bgColor: "from-teal-200 via-cyan-100 to-sky-200",       bgEmoji: "🌿" },
+  { id: 18, name: "Dinner Time!",   emoji: "🍔", layout: grid(5, 6), tileSet: symbols("food",    15),  bgColor: "from-red-200 via-orange-100 to-yellow-200",   bgEmoji: "🍽️" },
+  { id: 19, name: "Deep Sea",       emoji: "🦈", layout: grid(5, 6), tileSet: symbols("ocean",   15),  bgColor: "from-blue-300 via-cyan-100 to-teal-200",      bgEmoji: "🐋" },
+
+  // ─── Tier 7: 5 rows × 8 cols = 20 pairs ───
+  { id: 20, name: "Enchanted",      emoji: "🦄", layout: grid(5, 8), tileSet: symbols("fantasy", 20),  bgColor: "from-pink-200 via-purple-100 to-indigo-200",  bgEmoji: "🪄" },
+  { id: 21, name: "City Roads",     emoji: "🚌", layout: grid(5, 8), tileSet: symbols("vehicles",20),  bgColor: "from-slate-200 via-gray-100 to-zinc-200",     bgEmoji: "🏙️" },
+  { id: 22, name: "Galaxy Tour",    emoji: "🪐", layout: grid(5, 8), tileSet: symbols("space",   20),  bgColor: "from-indigo-300 via-purple-100 to-violet-200",bgEmoji: "🌌" },
+
+  // ─── Tier 8: 6 rows × 6 cols = 18 pairs ───
+  { id: 23, name: "Nature Park",    emoji: "🌻", layout: grid(6, 6), tileSet: symbols("nature",  18),  bgColor: "from-green-300 via-emerald-100 to-teal-200",  bgEmoji: "🌲" },
+  { id: 24, name: "Rock Star!",     emoji: "🎤", layout: grid(6, 6), tileSet: symbols("music",   18),  bgColor: "from-purple-300 via-fuchsia-100 to-pink-200", bgEmoji: "🎶" },
+  { id: 25, name: "Storm Chaser",   emoji: "🌪️", layout: grid(6, 6), tileSet: symbols("weather", 18),  bgColor: "from-sky-300 via-blue-100 to-indigo-200",     bgEmoji: "⛈️" },
+
+  // ─── Tier 9: 6 rows × 8 cols = 24 pairs ───
+  { id: 26, name: "Safari!",        emoji: "🐘", layout: grid(6, 8), tileSet: symbols("animals", 20),  bgColor: "from-amber-300 via-yellow-100 to-lime-200",   bgEmoji: "🦒" },
+  { id: 27, name: "Big Ocean",      emoji: "🐋", layout: grid(6, 8), tileSet: symbols("ocean",   20),  bgColor: "from-teal-300 via-cyan-100 to-sky-200",       bgEmoji: "🌊" },
+  { id: 28, name: "Mega Sports",    emoji: "🥇", layout: grid(6, 8), tileSet: symbols("sports",  20),  bgColor: "from-lime-300 via-green-100 to-emerald-200",  bgEmoji: "🏅" },
+
+  // ─── Tier 10: Master levels ───
+  { id: 29, name: "Mix & Match",    emoji: "🎉", layout: grid(6, 8), tileSet: [
+      ...symbols("animals",  5),
+      ...symbols("food",     5),
+      ...symbols("space",    5),
+      ...symbols("sports",   5),
+    ],
+    bgColor: "from-rose-300 via-orange-100 to-yellow-200", bgEmoji: "🌈" },
+  { id: 30, name: "Champion!",      emoji: "🏆", layout: grid(6, 8), tileSet: [
+      ...symbols("vehicles", 5),
+      ...symbols("music",    5),
+      ...symbols("ocean",    5),
+      ...symbols("fantasy",  5),
+    ],
+    bgColor: "from-violet-300 via-purple-100 to-fuchsia-200", bgEmoji: "🌟" },
+];
