@@ -119,7 +119,7 @@ export const TILE_SETS: Record<string, { symbol: string; emoji: string }[]> = {
     { symbol: "airplane", emoji: "✈️" },
     { symbol: "ship", emoji: "🚢" },
     { symbol: "helicopter", emoji: "🚁" },
-    { symbol: "bicycle", emoji: "🚲" },
+    { symbol: "bike", emoji: "🚲" },
     { symbol: "motorcycle", emoji: "🏍️" },
     { symbol: "tractor", emoji: "🚜" },
     { symbol: "ambulance", emoji: "🚑" },
@@ -157,7 +157,7 @@ export const TILE_SETS: Record<string, { symbol: string; emoji: string }[]> = {
     { symbol: "crystal-ball", emoji: "🔮" },
   ],
   ocean: [
-    { symbol: "fish", emoji: "🐟" },
+    { symbol: "blue-fish", emoji: "🐟" },
     { symbol: "tropical-fish", emoji: "🐠" },
     { symbol: "shark", emoji: "🦈" },
     { symbol: "octopus", emoji: "🐙" },

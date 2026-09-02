@@ -9,7 +9,6 @@ export interface Tile {
   isSelected: boolean;
   isHinted: boolean;
   isMismatched: boolean;
-  isBlocked: boolean;
 }
 
 export interface Level {
