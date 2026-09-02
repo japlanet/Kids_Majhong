@@ -91,7 +91,6 @@ export function initGameState(level: Level): GameState {
     selectedTile: null,
     matchedPairs: 0,
     totalPairs,
-    hintUsed: false,
     levelComplete: false,
     moves: 0,
   };
@@ -112,7 +111,7 @@ export function selectTile(state: GameState, tileId: string): GameState {
       ...t,
       isSelected: t.id === tileId,
     }));
-    return { ...state, tiles: newTiles, selectedTile: tile, hintUsed: false };
+    return { ...state, tiles: newTiles, selectedTile: tile };
   }
 
   if (state.selectedTile.id === tileId) {
@@ -137,7 +136,6 @@ export function selectTile(state: GameState, tileId: string): GameState {
       matchedPairs: newMatchedPairs,
       levelComplete,
       moves: state.moves + 1,
-      hintUsed: false,
     };
   }
 
@@ -161,5 +159,5 @@ export function applyHint(state: GameState): GameState {
     isHinted: hintIds.has(t.id),
   }));
 
-  return { ...state, tiles: newTiles, selectedTile: null, hintUsed: true };
+  return { ...state, tiles: newTiles, selectedTile: null };
 }

@@ -214,7 +214,6 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
         <LevelComplete
           levelId={levelId}
           totalLevels={LEVELS.length}
-          moves={gameState.moves}
           onNextLevel={handleNextLevel}
           onRetry={handleRetry}
           onMenu={onMenu}
