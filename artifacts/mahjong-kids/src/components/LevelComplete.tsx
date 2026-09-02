@@ -3,13 +3,12 @@ import { Confetti } from "./Confetti";
 interface LevelCompleteProps {
   levelId: number;
   totalLevels: number;
-  moves: number;
   onNextLevel: () => void;
   onRetry: () => void;
   onMenu: () => void;
 }
 
-export function LevelComplete({ levelId, totalLevels, moves, onNextLevel, onRetry, onMenu }: LevelCompleteProps) {
+export function LevelComplete({ levelId, totalLevels, onNextLevel, onRetry, onMenu }: LevelCompleteProps) {
   const isLastLevel = levelId >= totalLevels;
 
   return (

@@ -26,7 +26,6 @@ export interface GameState {
   selectedTile: Tile | null;
   matchedPairs: number;
   totalPairs: number;
-  hintUsed: boolean;
   levelComplete: boolean;
   moves: number;
 }

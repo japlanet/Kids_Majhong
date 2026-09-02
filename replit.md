@@ -28,17 +28,18 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
 
 ## Artifacts
 
-### Kids Mahjong Puzzle Game (`artifacts/mahjong-kids`)
+### Tile Match (`artifacts/mahjong-kids`)
 - **Preview path**: `/`
 - **Type**: React + Vite (frontend only, no backend)
+- **Live site**: https://japlanet.github.io/Kids_Majhong/ — deployed by `.github/workflows/deploy.yml` on every push to `main`
 - **Description**: A Mahjong-style tile matching puzzle game for kids (first graders)
 - **Features**:
-  - 5 levels with themed emoji tiles (Animals, Food, Space, Sports, Nature)
-  - Hint button (💡) that highlights a valid matching pair
-  - Progress bar and pair counter
-  - Confetti + celebration modal on level completion
+  - 30 levels across 10 emoji themes, grouped into tiers of increasing board size
+  - Hint button (💡) that highlights a matching pair, with a short cooldown
+  - Sound effects (Web Audio, on by default, toggle in the header)
+  - Progress bar, pair counter, confetti + celebration modal on level completion
   - Completed levels saved to localStorage
-  - Touch-friendly large tiles for iPad
-  - No reading required — all pictorial
-- **Game Logic**: `src/game/engine.ts` — free tile detection, hint finder, match logic
-- **Levels**: `src/game/levels.ts` — 5 levels, 8/10/12/14/16 pairs respectively
+  - Installable to the home screen (manifest + icons) and playable offline (`public/sw.js`)
+  - Touch-friendly large tiles for iPad; no reading required
+- **Game Logic**: `src/game/engine.ts` — tile building, match logic, hint finder
+- **Levels**: `src/game/levels.ts` — tile sets and the 30-level table
