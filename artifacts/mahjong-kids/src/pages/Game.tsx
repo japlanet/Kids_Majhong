@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { GameBoard } from "../components/GameBoard";
 import { LevelComplete } from "../components/LevelComplete";
 import { LEVELS } from "../game/levels";
@@ -20,19 +20,32 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
   const [levelCompleteShown, setLevelCompleteShown] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(() => {
     try {
-      return localStorage.getItem("mahjong-kids-sound-enabled") === "true";
+      // Sound is on unless the player has explicitly turned it off.
+      return localStorage.getItem("mahjong-kids-sound-enabled") !== "false";
     } catch {
-      return false;
+      return true;
     }
   });
   const sounds = useGameSounds(soundEnabled);
+  const hintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearHintCooldown = useCallback(() => {
+    if (hintTimerRef.current) {
+      clearTimeout(hintTimerRef.current);
+      hintTimerRef.current = null;
+    }
+    setHintCooldown(false);
+  }, []);
 
   // Re-init when level changes
   useEffect(() => {
     setGameState(initGameState(level));
     setLevelCompleteShown(false);
-    setHintCooldown(false);
-  }, [levelId, level]);
+    clearHintCooldown();
+  }, [levelId, level, clearHintCooldown]);
+
+  // Don't leave a hint timer running after the page unmounts
+  useEffect(() => clearHintCooldown, [clearHintCooldown]);
 
   // Detect level complete
   useEffect(() => {
@@ -46,27 +59,27 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
   }, [gameState.levelComplete, levelCompleteShown, levelId, onLevelComplete]);
 
   const handleTileClick = useCallback((id: string) => {
-    setGameState(prev => {
-      const next = selectTile(prev, id);
-      const tappedTile = prev.tiles.find(tile => tile.id === id);
+    // Compute the next state here, in the tap's own call stack, so the audio
+    // context is unlocked by the user gesture and each sound plays exactly once.
+    const next = selectTile(gameState, id);
+    const tappedTile = gameState.tiles.find(tile => tile.id === id);
 
-      if (next.matchedPairs > prev.matchedPairs) {
-        sounds.playMatch();
-        if (next.levelComplete) sounds.playComplete();
-      } else if (
-        prev.selectedTile &&
-        tappedTile &&
-        prev.selectedTile.id !== tappedTile.id &&
-        prev.selectedTile.symbol !== tappedTile.symbol
-      ) {
-        sounds.playMismatch();
-      } else {
-        sounds.playSelect();
-      }
+    if (next.matchedPairs > gameState.matchedPairs) {
+      sounds.playMatch();
+      if (next.levelComplete) sounds.playComplete();
+    } else if (
+      gameState.selectedTile &&
+      tappedTile &&
+      gameState.selectedTile.id !== tappedTile.id &&
+      gameState.selectedTile.symbol !== tappedTile.symbol
+    ) {
+      sounds.playMismatch();
+    } else {
+      sounds.playSelect();
+    }
 
-      return next;
-    });
-  }, [sounds]);
+    setGameState(next);
+  }, [gameState, sounds]);
 
   const handleToggleSound = useCallback(() => {
     setSoundEnabled(prev => {
@@ -82,14 +95,17 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
     if (hintCooldown) return;
     setGameState(prev => applyHint(prev));
     setHintCooldown(true);
-    setTimeout(() => setHintCooldown(false), 3000);
+    hintTimerRef.current = setTimeout(() => {
+      hintTimerRef.current = null;
+      setHintCooldown(false);
+    }, 3000);
   }, [hintCooldown]);
 
   const handleRetry = useCallback(() => {
     setGameState(initGameState(level));
     setLevelCompleteShown(false);
-    setHintCooldown(false);
-  }, [level]);
+    clearHintCooldown();
+  }, [level, clearHintCooldown]);
 
   const handleNextLevel = useCallback(() => {
     const nextId = levelId + 1;

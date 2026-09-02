@@ -75,11 +75,6 @@
   transform: scale(0.93);
 }
 
-.tile.selected {
-  transform: scale(1.08) translateY(-4px);
-  z-index: 10;
-}
-
 .tile.hint-highlight {
   animation: hint-pulse 0.8s ease-in-out infinite alternate;
   z-index: 10;

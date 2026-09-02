@@ -54,7 +54,6 @@ export function buildTiles(level: Level): Tile[] {
             isSelected: false,
             isHinted: false,
             isMismatched: false,
-            isBlocked: false,
           });
         }
       }
@@ -65,18 +64,9 @@ export function buildTiles(level: Level): Tile[] {
 }
 
 // This is a simple kids matching game — every unmatched tile is always selectable.
-// No Mahjong blocking rules apply.
-export function isFreeTile(tile: Tile): boolean {
-  return !tile.isMatched;
-}
-
-export function getFreeTiles(allTiles: Tile[]): Tile[] {
-  return allTiles.filter(t => isFreeTile(t));
-}
-
-// Find any matching pair among unmatched tiles
+// Find any matching pair among unmatched tiles.
 export function findHintPair(allTiles: Tile[]): [Tile, Tile] | null {
-  const free = getFreeTiles(allTiles);
+  const free = allTiles.filter(t => !t.isMatched);
   const bySymbol = new Map<string, Tile[]>();
 
   for (const tile of free) {
