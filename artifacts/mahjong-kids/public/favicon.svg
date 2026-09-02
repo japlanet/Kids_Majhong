@@ -1,3 +1,37 @@
-<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFB347"/>
+      <stop offset="1" stop-color="#FF6A3D"/>
+    </linearGradient>
+    <linearGradient id="t1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF7D6"/><stop offset="1" stop-color="#FFE38A"/></linearGradient>
+    <linearGradient id="t2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE4EC"/><stop offset="1" stop-color="#FFB3C7"/></linearGradient>
+    <linearGradient id="t3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E0F2FF"/><stop offset="1" stop-color="#A9D4FF"/></linearGradient>
+    <linearGradient id="t4" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E4FBEA"/><stop offset="1" stop-color="#A8EBBE"/></linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <circle cx="160" cy="140" r="220" fill="#FFFFFF" opacity="0.12"/>
+  <circle cx="900" cy="920" r="260" fill="#FFFFFF" opacity="0.10"/>
+  <g font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif" font-size="190" text-anchor="middle">
+    <g transform="translate(300 300) rotate(-6)">
+      <rect x="-150" y="-140" width="300" height="300" rx="48" fill="#000" opacity="0.18"/>
+      <rect x="-150" y="-150" width="300" height="300" rx="48" fill="url(#t1)" stroke="#F5C042" stroke-width="10"/>
+      <text y="68">🐱</text>
+    </g>
+    <g transform="translate(724 300) rotate(5)">
+      <rect x="-150" y="-140" width="300" height="300" rx="48" fill="#000" opacity="0.18"/>
+      <rect x="-150" y="-150" width="300" height="300" rx="48" fill="url(#t2)" stroke="#F0789A" stroke-width="10"/>
+      <text y="68">🍓</text>
+    </g>
+    <g transform="translate(300 724) rotate(4)">
+      <rect x="-150" y="-140" width="300" height="300" rx="48" fill="#000" opacity="0.18"/>
+      <rect x="-150" y="-150" width="300" height="300" rx="48" fill="url(#t3)" stroke="#5FA8F5" stroke-width="10"/>
+      <text y="68">🚀</text>
+    </g>
+    <g transform="translate(724 724) rotate(-5)">
+      <rect x="-150" y="-140" width="300" height="300" rx="48" fill="#000" opacity="0.18"/>
+      <rect x="-150" y="-150" width="300" height="300" rx="48" fill="url(#t4)" stroke="#5CC98A" stroke-width="10"/>
+      <text y="68">⭐</text>
+    </g>
+  </g>
 </svg>
