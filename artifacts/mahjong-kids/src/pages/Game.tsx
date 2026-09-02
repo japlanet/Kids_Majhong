@@ -4,6 +4,7 @@ import { LevelComplete } from "../components/LevelComplete";
 import { LEVELS } from "../game/levels";
 import { initGameState, selectTile, applyHint } from "../game/engine";
 import type { Level } from "../game/types";
+import { useGameSounds } from "../hooks/useGameSounds";
 
 interface GamePageProps {
   levelId: number;
@@ -17,6 +18,14 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
   const [gameState, setGameState] = useState(() => initGameState(level));
   const [hintCooldown, setHintCooldown] = useState(false);
   const [levelCompleteShown, setLevelCompleteShown] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    try {
+      return localStorage.getItem("mahjong-kids-sound-enabled") === "true";
+    } catch {
+      return false;
+    }
+  });
+  const sounds = useGameSounds(soundEnabled);
 
   // Re-init when level changes
   useEffect(() => {
@@ -28,16 +37,45 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
   // Detect level complete
   useEffect(() => {
     if (gameState.levelComplete && !levelCompleteShown) {
-      setLevelCompleteShown(true);
       onLevelComplete(levelId);
       // Small delay so the last match animation plays
       const t = setTimeout(() => setLevelCompleteShown(true), 400);
       return () => clearTimeout(t);
     }
+    return undefined;
   }, [gameState.levelComplete, levelCompleteShown, levelId, onLevelComplete]);
 
   const handleTileClick = useCallback((id: string) => {
-    setGameState(prev => selectTile(prev, id));
+    setGameState(prev => {
+      const next = selectTile(prev, id);
+      const tappedTile = prev.tiles.find(tile => tile.id === id);
+
+      if (next.matchedPairs > prev.matchedPairs) {
+        sounds.playMatch();
+        if (next.levelComplete) sounds.playComplete();
+      } else if (
+        prev.selectedTile &&
+        tappedTile &&
+        prev.selectedTile.id !== tappedTile.id &&
+        prev.selectedTile.symbol !== tappedTile.symbol
+      ) {
+        sounds.playMismatch();
+      } else {
+        sounds.playSelect();
+      }
+
+      return next;
+    });
+  }, [sounds]);
+
+  const handleToggleSound = useCallback(() => {
+    setSoundEnabled(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem("mahjong-kids-sound-enabled", String(next));
+      } catch {}
+      return next;
+    });
   }, []);
 
   const handleHint = useCallback(() => {
@@ -67,9 +105,9 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
   const remaining = gameState.totalPairs - gameState.matchedPairs;
 
   return (
-    <div className={`min-h-screen game-bg bg-gradient-to-br ${level.bgColor} flex flex-col`}>
+    <div className={`min-h-screen game-screen game-bg bg-gradient-to-br ${level.bgColor} flex flex-col`}>
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-4 pb-2">
+      <div className="game-header flex items-center gap-3 px-4 pt-4 pb-2">
         <button
           onClick={onMenu}
           className="game-btn w-12 h-12 rounded-xl bg-white/80 shadow flex items-center justify-center text-2xl font-black border-b-4 border-gray-200"
@@ -95,6 +133,16 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
           </div>
         </div>
 
+        {/* Sound toggle */}
+        <button
+          onClick={handleToggleSound}
+          className="game-btn w-12 h-12 rounded-xl bg-white/80 shadow flex items-center justify-center text-2xl border-b-4 border-gray-200 active:border-b-0"
+          aria-label={soundEnabled ? "Turn sound off" : "Turn sound on"}
+          title={soundEnabled ? "Sound on" : "Sound off"}
+        >
+          <span role="img" aria-hidden="true">{soundEnabled ? "🔊" : "🔇"}</span>
+        </button>
+
         {/* Hint button */}
         <button
           onClick={handleHint}
@@ -116,9 +164,9 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
       {/* Remaining tiles indicator */}
       <div className="flex justify-center mb-2">
         <div className="bg-white/60 rounded-xl px-4 py-1 text-sm font-bold text-gray-700">
-          {remaining > 0
-            ? `${remaining} pair${remaining !== 1 ? "s" : ""} left!`
-            : "All matched! 🎉"}
+           {remaining > 0
+             ? `${remaining} pair${remaining !== 1 ? "s" : ""} left!`
+             : "All matched! 🎉"}
         </div>
       </div>
 
@@ -134,13 +182,14 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
       </div>
 
       {/* Retry button at bottom */}
-      <div className="flex justify-center pb-4 gap-3">
+      <div className="game-footer flex justify-center pb-4 gap-3">
         <button
           onClick={handleRetry}
-          className="game-btn px-6 py-3 rounded-xl bg-white/80 shadow font-bold text-gray-700 border-b-4 border-gray-200 active:border-b-0 text-lg"
+          className="game-btn px-5 sm:px-6 py-3 rounded-xl bg-white/80 shadow font-bold text-gray-700 border-b-4 border-gray-200 active:border-b-0 text-lg"
           aria-label="Restart level"
         >
-          🔄 Restart
+          <span role="img" aria-hidden="true">🔄</span>
+          <span className="hidden sm:inline">Restart</span>
         </button>
       </div>
 

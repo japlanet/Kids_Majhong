@@ -53,6 +53,7 @@ export function buildTiles(level: Level): Tile[] {
             isMatched: false,
             isSelected: false,
             isHinted: false,
+            isMismatched: false,
             isBlocked: false,
           });
         }
@@ -107,7 +108,11 @@ export function initGameState(level: Level): GameState {
 }
 
 export function selectTile(state: GameState, tileId: string): GameState {
-  const tiles = state.tiles.map(t => ({ ...t, isHinted: false }));
+  const tiles = state.tiles.map(t => ({
+    ...t,
+    isHinted: false,
+    isMismatched: false,
+  }));
   const tile = tiles.find(t => t.id === tileId);
   if (!tile || tile.isMatched) return { ...state, tiles };
 
@@ -150,6 +155,7 @@ export function selectTile(state: GameState, tileId: string): GameState {
   const newTiles = tiles.map(t => ({
     ...t,
     isSelected: t.id === tileId,
+    isMismatched: t.id === tileId || t.id === state.selectedTile!.id,
   }));
   return { ...state, tiles: newTiles, selectedTile: tile, moves: state.moves + 1 };
 }

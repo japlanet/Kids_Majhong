@@ -50,7 +50,7 @@ export function LevelSelect({ onSelectLevel, completedLevels }: LevelSelectProps
   const completedCount = completedLevels.size;
 
   return (
-    <div className="min-h-screen game-bg flex flex-col">
+    <div className="min-h-screen level-select-screen game-bg flex flex-col">
       {/* Fixed header */}
       <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-sm border-b border-white/60 px-4 py-3 text-center shadow-sm">
         <div className="text-4xl mb-1" role="img" aria-label="game">🎮</div>
@@ -83,11 +83,11 @@ export function LevelSelect({ onSelectLevel, completedLevels }: LevelSelectProps
                       key={level.id}
                       onClick={() => onSelectLevel(level.id)}
                       className={`
-                        game-btn flex flex-col items-center gap-1 p-3 rounded-2xl
+                        game-btn flex flex-col items-center gap-1 p-3 rounded-2xl min-h-[112px]
                         bg-gradient-to-br ${level.bgColor}
                         border-2 border-white/50
                         shadow-md active:shadow-sm
-                        text-white font-black
+                        text-slate-900 font-black
                         relative overflow-hidden
                       `}
                       aria-label={`Level ${level.id}: ${level.name}${done ? " - completed" : ""}`}
@@ -95,9 +95,13 @@ export function LevelSelect({ onSelectLevel, completedLevels }: LevelSelectProps
                       {done && (
                         <span className="absolute top-1 right-1 text-lg" role="img" aria-label="completed">⭐</span>
                       )}
-                      <span className="text-3xl" role="img">{level.emoji}</span>
-                      <span className="text-xs font-black opacity-80">Level {level.id}</span>
-                      <span className="text-xs font-bold opacity-70 text-center leading-tight">{level.name}</span>
+                      <span className="text-3xl drop-shadow-sm" role="img">{level.emoji}</span>
+                      <span className="text-xs font-black bg-white/60 rounded-full px-2 py-0.5 text-slate-800">
+                        Level {level.id}
+                      </span>
+                      <span className="text-xs font-bold bg-white/55 rounded-full px-2 py-0.5 text-center leading-tight text-slate-800">
+                        {level.name}
+                      </span>
                     </button>
                   );
                 })}

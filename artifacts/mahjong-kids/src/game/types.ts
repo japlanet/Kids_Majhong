@@ -8,6 +8,7 @@ export interface Tile {
   isMatched: boolean;
   isSelected: boolean;
   isHinted: boolean;
+  isMismatched: boolean;
   isBlocked: boolean;
 }
 

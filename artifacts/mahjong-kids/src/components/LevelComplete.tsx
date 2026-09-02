@@ -23,9 +23,9 @@ export function LevelComplete({ levelId, totalLevels, moves, onNextLevel, onRetr
         <h2 className="text-3xl font-black text-orange-500 mb-1">
           {isLastLevel ? "You Did It!" : "Great Job!"}
         </h2>
-        <p className="text-lg font-bold text-teal-600 mb-6">
+          <p className="text-lg font-bold text-teal-600 mb-6">
           {isLastLevel
-            ? "You finished all 5 levels! You're amazing!"
+              ? `You finished all ${totalLevels} levels! You're amazing!`
             : "Level complete! Keep going!"}
         </p>
 

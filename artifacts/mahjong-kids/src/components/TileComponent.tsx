@@ -47,6 +47,7 @@ export function TileComponent({ tile, onClick }: TileProps) {
           ? "ring-4 ring-orange-400 ring-offset-1 shadow-orange-300/60 shadow-lg"
           : "shadow-[2px_4px_0_rgba(0,0,0,0.15)]",
         tile.isHinted ? "hint-highlight" : "",
+        tile.isMismatched ? "mismatch ring-4 ring-rose-400 ring-offset-1" : "",
         "cursor-pointer",
         "select-none",
       ].filter(Boolean).join(" ")}

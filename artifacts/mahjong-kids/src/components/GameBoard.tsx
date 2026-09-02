@@ -41,7 +41,7 @@ export function GameBoard({ tiles, level, onTileClick }: GameBoardProps) {
         gridTemplateColumns: `repeat(${cols}, 1fr)`,
         gridTemplateRows: `repeat(${rows}, 1fr)`,
         width: "100%",
-        maxWidth: `min(${cols * 90}px, 100%)`,
+         maxWidth: `min(${cols * 112}px, 100%)`,
         aspectRatio: `${cols} / ${rows}`,
       }}
       aria-label="Mahjong game board"
