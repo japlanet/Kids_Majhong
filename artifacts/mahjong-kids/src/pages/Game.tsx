@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { GameBoard } from "../components/GameBoard";
 import { LevelComplete } from "../components/LevelComplete";
+import { ConfirmRestart } from "../components/ConfirmRestart";
 import { LEVELS } from "../game/levels";
 import { initGameState, selectTile, applyHint } from "../game/engine";
 import type { Level } from "../game/types";
@@ -18,6 +19,7 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
   const [gameState, setGameState] = useState(() => initGameState(level));
   const [hintCooldown, setHintCooldown] = useState(false);
   const [levelCompleteShown, setLevelCompleteShown] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<"restart" | "menu" | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(() => {
     try {
       // Sound is on unless the player has explicitly turned it off.
@@ -41,6 +43,7 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
   useEffect(() => {
     setGameState(initGameState(level));
     setLevelCompleteShown(false);
+    setConfirmAction(null);
     clearHintCooldown();
   }, [levelId, level, clearHintCooldown]);
 
@@ -104,8 +107,22 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
   const handleRetry = useCallback(() => {
     setGameState(initGameState(level));
     setLevelCompleteShown(false);
+    setConfirmAction(null);
     clearHintCooldown();
   }, [level, clearHintCooldown]);
+
+  // Once some pairs are matched, ask (in pictures) before throwing the board away.
+  const inProgress = gameState.matchedPairs > 0 && !gameState.levelComplete;
+
+  const handleBackTap = useCallback(() => {
+    if (inProgress) setConfirmAction("menu");
+    else onMenu();
+  }, [inProgress, onMenu]);
+
+  const handleRestartTap = useCallback(() => {
+    if (inProgress) setConfirmAction("restart");
+    else handleRetry();
+  }, [inProgress, handleRetry]);
 
   const handleNextLevel = useCallback(() => {
     const nextId = levelId + 1;
@@ -121,11 +138,11 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
   const remaining = gameState.totalPairs - gameState.matchedPairs;
 
   return (
-    <div className={`min-h-screen game-screen game-bg bg-gradient-to-br ${level.bgColor} flex flex-col`}>
+    <div className={`game-screen game-bg bg-gradient-to-br ${level.bgColor} flex flex-col`}>
       {/* Header */}
       <div className="game-header flex items-center gap-3 px-4 pt-4 pb-2">
         <button
-          onClick={onMenu}
+          onClick={handleBackTap}
           className="game-btn w-12 h-12 rounded-xl bg-white/80 shadow flex items-center justify-center text-2xl font-black border-b-4 border-gray-200"
           aria-label="Back to level select"
         >
@@ -135,8 +152,8 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-2xl" role="img">{level.emoji}</span>
-            <span className="font-black text-lg text-white drop-shadow">Level {level.id}</span>
-            <span className="ml-auto font-bold text-white drop-shadow text-sm">
+            <span className="font-black text-lg text-gray-800">Level {level.id}</span>
+            <span className="ml-auto font-bold text-gray-800 text-sm">
               {gameState.matchedPairs}/{gameState.totalPairs} pairs
             </span>
           </div>
@@ -187,20 +204,18 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
       </div>
 
       {/* Game Board */}
-      <div className="flex-1 flex items-center justify-center px-3 pb-2 min-h-0">
-        <div className="bg-white/30 rounded-3xl p-3 shadow-inner backdrop-blur-sm w-full max-w-2xl">
-          <GameBoard
-            tiles={gameState.tiles}
-            level={level}
-            onTileClick={handleTileClick}
-          />
-        </div>
+      <div className="flex-1 min-h-0 w-full max-w-4xl mx-auto px-3 pb-2">
+        <GameBoard
+          tiles={gameState.tiles}
+          level={level}
+          onTileClick={handleTileClick}
+        />
       </div>
 
       {/* Retry button at bottom */}
       <div className="game-footer flex justify-center pb-4 gap-3">
         <button
-          onClick={handleRetry}
+          onClick={handleRestartTap}
           className="game-btn px-5 sm:px-6 py-3 rounded-xl bg-white/80 shadow font-bold text-gray-700 border-b-4 border-gray-200 active:border-b-0 text-lg"
           aria-label="Restart level"
         >
@@ -208,6 +223,15 @@ export function GamePage({ levelId, onMenu, onNextLevel, onLevelComplete }: Game
           <span className="hidden sm:inline">Restart</span>
         </button>
       </div>
+
+      {/* Picture-only "are you sure?" before losing a level in progress */}
+      {confirmAction && (
+        <ConfirmRestart
+          action={confirmAction}
+          onConfirm={confirmAction === "restart" ? handleRetry : onMenu}
+          onCancel={() => setConfirmAction(null)}
+        />
+      )}
 
       {/* Level Complete Modal */}
       {gameState.levelComplete && levelCompleteShown && (

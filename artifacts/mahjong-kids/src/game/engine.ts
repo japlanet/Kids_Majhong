@@ -97,9 +97,10 @@ export function initGameState(level: Level): GameState {
 }
 
 export function selectTile(state: GameState, tileId: string): GameState {
+  // Hints stay lit through taps so a child can tap one glowing tile and still
+  // see its partner; they clear once a pair is matched (the hinted one or another).
   const tiles = state.tiles.map(t => ({
     ...t,
-    isHinted: false,
     isMismatched: false,
   }));
   const tile = tiles.find(t => t.id === tileId);
@@ -125,6 +126,7 @@ export function selectTile(state: GameState, tileId: string): GameState {
     const newTiles = tiles.map(t => ({
       ...t,
       isSelected: false,
+      isHinted: false,
       isMatched: t.isMatched || t.id === tileId || t.id === state.selectedTile!.id,
     }));
     const newMatchedPairs = state.matchedPairs + 1;

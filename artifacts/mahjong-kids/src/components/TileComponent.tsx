@@ -27,51 +27,60 @@ export function TileComponent({ tile, onClick }: TileProps) {
   }
 
   const colorClass = TILE_COLORS[hashSymbol(tile.symbol) % TILE_COLORS.length];
+  // A selected tile shows only the selected look: no red "wrong" ring, and the
+  // hint glow waits until it is let go again.
+  const showHint = tile.isHinted && !tile.isSelected;
+  const showMismatch = tile.isMismatched && !tile.isSelected;
 
+  // The outer .tile owns the press feedback (shrink + darken on :active); the
+  // inner face owns the selected lift and the hint / mismatch animations, so
+  // neither transform overrides the other.
   return (
     <div
-      className={[
-        "tile",
-        "rounded-xl",
-        "border-2",
-        "flex",
-        "items-center",
-        "justify-center",
-        "bg-gradient-to-br",
-        "w-full",
-        "h-full",
-        "min-w-0",
-        "min-h-0",
-        colorClass,
-        tile.isSelected
-          ? "ring-4 ring-orange-400 ring-offset-1 shadow-orange-300/60 shadow-lg"
-          : "shadow-[2px_4px_0_rgba(0,0,0,0.15)]",
-        tile.isHinted ? "hint-highlight" : "",
-        tile.isMismatched ? "mismatch ring-4 ring-rose-400 ring-offset-1" : "",
-        "cursor-pointer",
-        "select-none",
-      ].filter(Boolean).join(" ")}
-      style={{
-        transform: tile.isSelected ? "scale(1.08) translateY(-4px)" : "none",
-        zIndex: tile.isSelected ? 10 : 1,
-        transition: "transform 0.15s ease, box-shadow 0.15s ease",
-      }}
+      className="tile w-full h-full min-w-0 min-h-0 cursor-pointer select-none"
+      style={{ zIndex: tile.isSelected || showHint ? 10 : 1 }}
       onClick={() => onClick(tile.id)}
+      // An (empty) touch listener lets iPad Safari apply :active on tap.
+      onTouchStart={() => {}}
       role="button"
       aria-pressed={tile.isSelected}
       aria-label={`Tile: ${tile.emoji}`}
     >
-      <span
-        role="img"
-        aria-hidden="true"
-        className="leading-none select-none"
+      <div
+        className={[
+          "tile-face",
+          "rounded-xl",
+          "border-2",
+          "flex",
+          "items-center",
+          "justify-center",
+          "bg-gradient-to-br",
+          "w-full",
+          "h-full",
+          colorClass,
+          tile.isSelected
+            ? "ring-4 ring-orange-400 ring-offset-1 shadow-orange-300/60 shadow-lg"
+            : "shadow-[2px_4px_0_rgba(0,0,0,0.15)]",
+          showHint ? "hint-highlight" : "",
+          showMismatch ? "mismatch ring-4 ring-rose-400 ring-offset-1" : "",
+        ].filter(Boolean).join(" ")}
         style={{
-          fontSize: "clamp(1.5rem, 5vw, 3.5rem)",
-          filter: "drop-shadow(1px 1px 2px rgba(0,0,0,0.12))",
+          transform: tile.isSelected ? "scale(1.08) translateY(-4px)" : "none",
         }}
       >
-        {tile.emoji}
-      </span>
+        <span
+          role="img"
+          aria-hidden="true"
+          className="leading-none select-none"
+          style={{
+            // Sized from the tile (set by GameBoard), not the viewport
+            fontSize: "calc(var(--tile-size, 64px) * 0.62)",
+            filter: "drop-shadow(1px 1px 2px rgba(0,0,0,0.12))",
+          }}
+        >
+          {tile.emoji}
+        </span>
+      </div>
     </div>
   );
 }
