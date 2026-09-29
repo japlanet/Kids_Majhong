@@ -6,11 +6,14 @@
  * reads the asset URLs out of it, and caches those. After that:
  *   - page loads are network-first, falling back to the cached shell offline
  *   - hashed assets are cache-first (their names change when content changes)
- *   - Google Fonts are served from cache and refreshed in the background
+ *   - fonts are bundled with the game; their files are named inside the
+ *     stylesheets, so install reads those too
+ *
+ * All the games share japlanet.github.io and so share one set of caches;
+ * activate only ever deletes this game's own old caches.
  */
-const CACHE_NAME = "tile-match-v1";
+const CACHE_NAME = "tile-match-v2";
 const BASE = new URL("./", self.location).href;
-const FONT_HOSTS = ["fonts.googleapis.com", "fonts.gstatic.com"];
 
 function sameOriginAssetUrls(html) {
   const urls = new Set();
@@ -35,6 +38,16 @@ async function precache() {
   urls.add(new URL("icons/icon-512.png", BASE).href);
   urls.add(new URL("icons/apple-touch-icon.png", BASE).href);
 
+  for (const href of [...urls].filter(u => u.endsWith(".css"))) {
+    try {
+      const css = await (await fetch(href)).text();
+      for (const m of css.matchAll(/url\(\s*['"]?([^'")]+)['"]?\s*\)/g)) {
+        const url = new URL(m[1], href);
+        if (url.origin === self.location.origin && url.pathname.endsWith(".woff2")) urls.add(url.href);
+      }
+    } catch {}
+  }
+
   // Cache each file independently so one miss doesn't abort the whole install.
   await Promise.all(
     [...urls].map(url => cache.add(url).catch(() => undefined)),
@@ -46,7 +59,7 @@ async function pruneStaleAssets(cache, html) {
   const live = sameOriginAssetUrls(html);
   const assetsPrefix = new URL("assets/", BASE).href;
   for (const request of await cache.keys()) {
-    if (request.url.startsWith(assetsPrefix) && !live.has(request.url)) {
+    if (request.url.startsWith(assetsPrefix) && !request.url.endsWith(".woff2") && !live.has(request.url)) {
       await cache.delete(request);
     }
   }
@@ -93,18 +106,6 @@ async function cacheFirst(request) {
   return response;
 }
 
-async function staleWhileRevalidate(request) {
-  const cache = await caches.open(CACHE_NAME);
-  const cached = await cache.match(request);
-  const refresh = fetch(request)
-    .then(response => {
-      if (response.ok || response.type === "opaque") cache.put(request, response.clone());
-      return response;
-    })
-    .catch(() => undefined);
-  return cached ?? (await refresh) ?? Response.error();
-}
-
 self.addEventListener("fetch", event => {
   const { request } = event;
   if (request.method !== "GET") return;
@@ -119,9 +120,5 @@ self.addEventListener("fetch", event => {
   if (url.origin === self.location.origin) {
     event.respondWith(cacheFirst(request));
     return;
-  }
-
-  if (FONT_HOSTS.includes(url.hostname)) {
-    event.respondWith(staleWhileRevalidate(request));
   }
 });
