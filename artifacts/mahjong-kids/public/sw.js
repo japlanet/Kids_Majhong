@@ -12,7 +12,7 @@
  * All the games share japlanet.github.io and so share one set of caches;
  * activate only ever deletes this game's own old caches.
  */
-const CACHE_NAME = "tile-match-v2";
+const CACHE_NAME = "tile-match-v3";
 const BASE = new URL("./", self.location).href;
 
 function sameOriginAssetUrls(html) {
@@ -111,6 +111,8 @@ self.addEventListener("fetch", event => {
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
+  // The "Check for update" button asks the website for the current page; never cache or answer that.
+  if (url.searchParams.has("update-check")) return;
 
   if (request.mode === "navigate") {
     event.respondWith(handleNavigation());

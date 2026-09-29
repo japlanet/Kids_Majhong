@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { LEVELS } from "../game/levels";
+import { UpdateButton } from "./UpdateButton";
 
 interface LevelSelectProps {
   onSelectLevel: (levelId: number) => void;
@@ -130,6 +131,11 @@ export function LevelSelect({ onSelectLevel, completedLevels }: LevelSelectProps
 
           return rendered;
         })()}
+
+        {/* For grown-ups: get the newest version onto an installed iPad app. */}
+        <div className="mx-auto mt-8 max-w-xs border-t-2 border-dashed border-gray-200 pt-4">
+          <UpdateButton />
+        </div>
 
         <div className="h-4" />
       </div>
